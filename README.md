@@ -1,8 +1,7 @@
 Comp4710--Project
 =================
 
-A comparison of a lga and ulga pairwise sequence alignment algorithms to traditional 
-Needleman-Wunsch & Smith-Waterman algs. for comparative genome assembly
+A comparison of a LGA (Local Global Alignment) & ULGA (Uncertain Local Global Alignment) pairwise sequence alignment algorithms to traditional Needleman-Wunsch & Smith-Waterman algs. for comparative genome assembly
 
 ### [Seqan](http://www.seqan.de/) ###
 Provides a set of easy to use C++ libraries for reading and writing fastq & sam files.
