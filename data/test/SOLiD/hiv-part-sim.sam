@@ -1,0 +1,15 @@
+@HD	VN:1.4	SQ:unsorted
+@SQ	SN:gi|32997138|dbj|BD187399.1| A DNA encoding an infective HIV genome	LN:210
+@PG	ID:03	PN:ART_SOLiD	CL:./bin/art/art_SOLiD -s data/test/hiv-part.fa data/test/SOLiD/hiv-part-sim 34 2 
+1_1_1_F3	0	gi|32997138|dbj|BD187399.1|	148	99	18=9X7=	*	0	0	taccagttgacccaaaagcctgctcttaggacaa	6B40'546;315-:./472)2-*3-.,&-'.(#%
+1_1_2_F3	16	gi|32997138|dbj|BD187399.1|	91	99	15X19=	*	0	0	ttgtgttgaaattgaggaccagattcccactgtg	+&$,$(%8,&0,67&1:17.9-711>58,/3-/8
+1_1_3_F3	16	gi|32997138|dbj|BD187399.1|	100	99	7X27=	*	0	0	ttaatccgaccagattcccactgtgttttggatg	(&'(((%8-+*.83);.5..?.4754/23/A9:A
+1_1_4_F3	0	gi|32997138|dbj|BD187399.1|	110	99	24=10X	*	0	0	cagattcccactgtgttttggatgcacgaatgtc	64<=-.189-0:4E37103.1<-.).0'-((/&-
+1_1_5_F3	0	gi|32997138|dbj|BD187399.1|	32	99	23=3X4=4X	*	0	0	agagatccttgacttatgggtctcgcatacgtgg	8:1E51<2E10:1=+-;04-.8/+/.,(-*(.'-
+1_1_6_F3	16	gi|32997138|dbj|BD187399.1|	114	99	7=15X12=	*	0	0	ttcccaccacaccccaagcaacgcttcaagctag	*(*,)-(.-,1,9+(1;35+8.82,A0440=;E4
+1_1_7_F3	0	gi|32997138|dbj|BD187399.1|	58	99	17=17X	*	0	0	atacacaaggcttcttcaagtcggttaggttgat	62923+36A/4G/4143/,*/6)/*0.'*+)('*
+1_1_8_F3	0	gi|32997138|dbj|BD187399.1|	62	99	27=7X	*	0	0	acaaggcttcttccctgattggcaaaaagcacac	=8090097456414+4553-420/0,(&0)-+)(
+1_1_9_F3	16	gi|32997138|dbj|BD187399.1|	43	99	34X	*	0	0	gtaatacttgagcgccgcacaccttaggaggaaa	+%)+&+%,.+5+2-)//1*/976+)>4:=+84:*
+1_1_10_F3	0	gi|32997138|dbj|BD187399.1|	88	99	34=	*	0	0	actacacaccagggccagggaccagattcccact	2=/62.///,5;131435+*29-7&51(/*'/*.
+1_1_11_F3	0	gi|32997138|dbj|BD187399.1|	99	99	11=23X	*	0	0	gggccagggactgagcctttgtcacaccccaacc	0352(114+1/1/6/1,48-33*0(02)'(1*$)
+1_1_12_F3	16	gi|32997138|dbj|BD187399.1|	97	99	6X28=	*	0	0	tgaccgcagggaccagattcccactgtgttttgg	&,**$%(..,2)41-4,59,:,>6+61B6)/43A
