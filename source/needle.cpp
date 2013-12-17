@@ -7,6 +7,10 @@
 using namespace std;
 using namespace seqan;
 
+typedef String<char> TSequence;
+typedef Align<TSequence, ArrayGaps> TAlign;
+typedef Row<TAlign>::Type TRow;
+
 //ugly max function cause the std one was error out on me for some reason (Rory)
 float max(float x, float y, float z)
 {
@@ -24,9 +28,9 @@ float max(float x, float y, float z)
     }
 }
 
-int needle( Align<Dna5String> &align,
-            Dna5String ref_seq, 
-            Dna5String read_seq, 
+int needle( TAlign &align,
+            TSequence ref_seq, 
+            TSequence read_seq, 
             Score<int, Simple> scheme)
 {
     int score = 0;
@@ -42,20 +46,23 @@ int needle( Align<Dna5String> &align,
     //use the built in one just to make sure it works
     //we don't actually want to use this cause they may have
     //optimization we don't care about. 
-    score = globalAlignment(align, scheme, NeedlemanWunsch());
+    //score = globalAlignment(align, scheme, NeedlemanWunsch());    
     
-    /*
     //get the lengths of the sequences
     int len1 = length(ref_seq);
     int len2 = length(read_seq);
+
+    cout << "Got sequence lengths\n";
 
     //create the DP Matrix/Table
     float **matrix = new float * [len1 + 1];
     for (int i = 0; i <= len1; i++)
     {
-        matrix[i] = new float[len2];
+        matrix[i] = new float[len2 + 1];
     }
-    
+
+    cout << "Created matrix\n";
+        
     //initialize (will change by implementation)
     for (int i = 0; i <= len1; i++)
     {
@@ -67,6 +74,8 @@ int needle( Align<Dna5String> &align,
         matrix[0][j] = j * scoreGap(scheme);
     }
 
+    cout << "Initialized the matrix\n";
+    cout << "Gap=" << scoreGap(scheme) << " Match=" << scoreMatch(scheme) << " Mismatch=" << scoreMismatch(scheme) << "\n";
     //our values for storing each potential movement
     float diagonal, vertical, horizontal;
     int i, j;
@@ -74,13 +83,16 @@ int needle( Align<Dna5String> &align,
     {
         for (j = 1; j <= len2; j++)
         {
+            //cout << "i=" << i << " j=" << j << "\n";
             diagonal = matrix[i-1][j-1];
             vertical = matrix[i][j-1] + scoreGap(scheme);
             horizontal = matrix[i-1][j] + scoreGap(scheme);
 
+            //cout << "ref[i-1=" << i-1 << "] = " << ref_seq[i-1] << "\n";
             //not sure if elements in a Dna5String can be compared like this
-            if (ref_seq[i] == read_seq[j])
+            if (toupper(ref_seq[i-1]) == toupper(read_seq[j-1]))
             {
+                //cout << "Match at i=" << i << " j=" << j << "\n";
                 diagonal += scoreMatch(scheme);
             }
 
@@ -91,17 +103,43 @@ int needle( Align<Dna5String> &align,
 
             matrix[i][j] = max(diagonal, vertical, horizontal);
         }
+
+        //cout << "Diagonal=" << diagonal << " Vertical=" << vertical << " Horizontal=" << horizontal << "\n";
     }
 
-    score = matrix[i][j];
+    //cout << align << "\n";
 
-    //traceback
+    //set i and j to corner index of matrix
     i--;
     j--;
 
-    typedef Align<Dna5String> TAlign;
-    typedef Row<TAlign>::Type TRow;
+    score = matrix[i][j];
+    cout << "Score=" << score << "\n";
 
+    //print out the top corner of the matrix and sequences
+    /*
+    cout << setw(5) << " ";
+    for (int l = 1; l < 30; l++)
+    {
+        cout << setw(5) << ref_seq[l-1];
+    }
+    cout << endl;
+
+    for (int k = 0; k < 30; k++)
+    {
+        if (k > 0)
+        {
+            cout << read_seq[k-1];
+        }
+
+        for (int l = 0; l < 30; l++)
+        {
+            cout << setw(5) << matrix[l][k];
+        }
+        cout << endl;
+    }
+    */
+    //traceback
     float pos, match, mismatch, vgap, hgap;
     TRow &row1 = row(align,0);
     TRow &row2 = row(align,1);
@@ -113,30 +151,31 @@ int needle( Align<Dna5String> &align,
         vgap = matrix[i][j-1] + scoreGap(scheme);
         hgap = matrix[i-1][j] + scoreGap(scheme);
 
-        if (i > 0 && pos == match)
+        if (j > 0 && pos == vgap)
         {
-            i--;
-            j--;
-        }
-
-        else if (i > 0 && pos == mismatch)
-        {
-            i--;
-            j--;
-        }
-
-        else if (i > 0 && pos == vgap)
-        {
+            //cout << "Inserting a gap in the reference sequence\n";
             insertGap(row1, i);
             j--;
         }
 
         else if (i > 0 && pos == hgap)
         {
+            //cout << "Inserting a gap in the read\n";
             insertGap(row2, j);
             i--;
         }
+
+        else if (i > 0 && (pos == match || pos == mismatch))
+        {
+            //cout << "Mapping bp from read to ref\n";
+            i--;
+            j--;
+        }
+
     }
+
+    //see if printing here works any better
+    cout << align << "\n";
 
     //delete the dp matrix
     for (i = 0; i <= len1; i++)
@@ -144,7 +183,7 @@ int needle( Align<Dna5String> &align,
         delete matrix[i];
     }
     delete[] matrix;
-    */
+    
     return score;
 }
 
@@ -162,12 +201,12 @@ int main(int argc, char **argv)
     RecordReader<fstream, SinglePass<> > reader_reads(in_reads);
 
     CharString ref_id;
-    Dna5String ref_seq;
+    TSequence ref_seq;
     CharString read_id;
     CharString read_qual;
-    Dna5String read_seq;
+    TSequence read_seq;
 
-    Align<Dna5String> align;
+    TAlign align;
 
     if (!atEnd(reader_ref) && readRecord(ref_id, ref_seq, reader_ref, Fasta()) != 0)
     {
@@ -188,12 +227,11 @@ int main(int argc, char **argv)
         Score<int, Simple> scoringScheme(0, -1, -1);
         int score = needle(align, ref_seq, read_seq, scoringScheme);
         
-        cout << align << "\n"; 
+        //cout << align << "\n"; 
 
     }
 
     return 0;
 }
-
 
 
