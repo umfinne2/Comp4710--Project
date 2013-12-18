@@ -1,2 +1,4 @@
 a.out
-
+*.o
+*/CodeBlocks/bin/
+*/CodeBlocks/obj/

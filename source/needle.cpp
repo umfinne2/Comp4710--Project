@@ -1,15 +1,17 @@
 #include <fstream>
 #include <iostream>
 
-#include <seqan/seq_io.h>
-#include <seqan/sequence.h>
+//#include <seqan/seq_io.h>
+//#include <seqan/sequence.h>
+
+#include "needle.hpp"
 
 using namespace std;
 using namespace seqan;
 
-typedef String<char> TSequence;
-typedef Align<TSequence, ArrayGaps> TAlign;
-typedef Row<TAlign>::Type TRow;
+//typedef String<char> TSequence;
+//typedef Align<TSequence, ArrayGaps> TAlign;
+//typedef Row<TAlign>::Type TRow;
 
 //ugly max function cause the std one was error out on me for some reason (Rory)
 float max(float x, float y, float z)
@@ -29,32 +31,28 @@ float max(float x, float y, float z)
 }
 
 int needle( TAlign &align,
-            TSequence ref_seq, 
-            TSequence read_seq, 
+            TSequence ref_seq,
+            TSequence read_seq,
             Score<int, Simple> scheme)
 {
     int score = 0;
-    //possibly inefficient copying object rather than using reference
-    //needle(align, ref_seq, read_seq);
     resize( rows(align), 2 );
-    cout << "Resized alignment\n";
 
     assignSource( row( align, 0 ), ref_seq);
     assignSource( row( align, 1 ), read_seq);
-    cout << "Assigned source sequences\n";
 
     //use the built in one just to make sure it works
     //we don't actually want to use this cause they may have
-    //optimization we don't care about. 
-    //score = globalAlignment(align, scheme, NeedlemanWunsch());    
-    
+    //optimization we don't care about.
+    //score = globalAlignment(align, scheme, NeedlemanWunsch());
+
     //get the lengths of the sequences
     int len1 = length(ref_seq);
     int len2 = length(read_seq);
 
     cout << "Got sequence lengths\n";
 
-    //create the DP Matrix/Table
+    //create the DP Matrix/Table + could probably be its own function
     float **matrix = new float * [len1 + 1];
     for (int i = 0; i <= len1; i++)
     {
@@ -62,8 +60,8 @@ int needle( TAlign &align,
     }
 
     cout << "Created matrix\n";
-        
-    //initialize (will change by implementation)
+
+    //initialize (changes based on alg. could probably use function callback)
     for (int i = 0; i <= len1; i++)
     {
         matrix[i][0] = i * scoreGap(scheme);
@@ -83,16 +81,14 @@ int needle( TAlign &align,
     {
         for (j = 1; j <= len2; j++)
         {
-            //cout << "i=" << i << " j=" << j << "\n";
+            //we may want to change this if we use a lookup table rather than simple values
+            //separate function???
             diagonal = matrix[i-1][j-1];
             vertical = matrix[i][j-1] + scoreGap(scheme);
             horizontal = matrix[i-1][j] + scoreGap(scheme);
 
-            //cout << "ref[i-1=" << i-1 << "] = " << ref_seq[i-1] << "\n";
-            //not sure if elements in a Dna5String can be compared like this
             if (toupper(ref_seq[i-1]) == toupper(read_seq[j-1]))
             {
-                //cout << "Match at i=" << i << " j=" << j << "\n";
                 diagonal += scoreMatch(scheme);
             }
 
@@ -103,8 +99,6 @@ int needle( TAlign &align,
 
             matrix[i][j] = max(diagonal, vertical, horizontal);
         }
-
-        //cout << "Diagonal=" << diagonal << " Vertical=" << vertical << " Horizontal=" << horizontal << "\n";
     }
 
     //cout << align << "\n";
@@ -143,35 +137,39 @@ int needle( TAlign &align,
     float pos, match, mismatch, vgap, hgap;
     TRow &row1 = row(align,0);
     TRow &row2 = row(align,1);
-    while ( i > 0 || j > 0)
+    while ( i > 0 || j > 0 )
     {
+        //if we write a function for computing values than this traceback routine should never change
+        //between implementations
         pos = matrix[i][j];
         match = matrix[i-1][j-1] + scoreMatch(scheme);
         mismatch = matrix[i-1][j-1] + scoreMismatch(scheme);
         vgap = matrix[i][j-1] + scoreGap(scheme);
         hgap = matrix[i-1][j] + scoreGap(scheme);
 
-        if (j > 0 && pos == vgap)
+        if (i > 0 && j > 0 && (pos == match || pos == mismatch))
         {
-            //cout << "Inserting a gap in the reference sequence\n";
+            i--;
+            j--;
+        }
+
+        else if (j > 0 && pos == vgap)
+        {
             insertGap(row1, i);
             j--;
         }
 
         else if (i > 0 && pos == hgap)
         {
-            //cout << "Inserting a gap in the read\n";
             insertGap(row2, j);
             i--;
         }
 
-        else if (i > 0 && (pos == match || pos == mismatch))
+        else
         {
-            //cout << "Mapping bp from read to ref\n";
-            i--;
-            j--;
+            cout << "You distroyed the universe! You're on your own now :( \n";
+            exit(1);
         }
-
     }
 
     //see if printing here works any better
@@ -183,10 +181,11 @@ int needle( TAlign &align,
         delete matrix[i];
     }
     delete[] matrix;
-    
+
     return score;
 }
 
+/*
 int main(int argc, char **argv)
 {
     if (argc != 3)
@@ -226,12 +225,12 @@ int main(int argc, char **argv)
 
         Score<int, Simple> scoringScheme(0, -1, -1);
         int score = needle(align, ref_seq, read_seq, scoringScheme);
-        
-        //cout << align << "\n"; 
+
+        //cout << align << "\n";
 
     }
 
     return 0;
 }
 
-
+*/

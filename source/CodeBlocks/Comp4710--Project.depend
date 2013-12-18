@@ -1,0 +1,25 @@
+# depslib dependency file v1.0
+1387187180 source:/home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/bam.cpp
+	<fstream>
+	<iostream>
+	<seqan/seq_io.h>
+	<seqan/sequence.h>
+	<seqan/bam_io.h>
+
+1387364855 source:/home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/main.cpp
+	<fstream>
+	<iostream>
+	<seqan/seq_io.h>
+	<seqan/sequence.h>
+	<seqan/bam_io.h>
+	"needle.hpp"
+
+1387364913 source:/home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/needle.cpp
+	<fstream>
+	<iostream>
+	"needle.hpp"
+
+1387364833 /home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/needle.hpp
+	<seqan/seq_io.h>
+	<seqan/sequence.h>
+
