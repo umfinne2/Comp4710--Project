@@ -6,6 +6,7 @@
 #include <seqan/bam_io.h>
 
 #include "needle.hpp"
+#include "local_alignment.hpp"
 
 using namespace std;
 using namespace seqan;
