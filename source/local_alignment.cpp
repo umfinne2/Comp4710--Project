@@ -32,33 +32,80 @@ int LocalAlignment::smith_waterman(TSequence seq1, TSequence seq2, Score<int, Si
   int i = 0;
   int j= 0;
 
+  int max_i = 0;
+  int max_j = 0;
   for(i =0; i < seq1Len + 1; i++) {
     for(j = 0; j < seq2Len + 1; j++) {
       matrix[i][j] = 0;
     }
   }
 
-  for(i =0; i < seq1Len + 1; i++) {
+  /*for(i =0; i < seq1Len + 1; i++) {
     for(j = 0; j < seq2Len + 1; j++) {
       cout << matrix[i][j] << " ";
     }
     cout << "\n";
-  }
+  }*/
+
   for(i = 1; i < seq1Len + 1; i++) {
     for(j = 1; j < seq2Len + 1; j++) {
       currentCosts[DIAGONAL] = matrix[i-1][j-1] + LocalAlignment::match_cost(seq1, seq2, i, j, scores);
       currentCosts[TOP] = matrix[i-1][j] + scoreGap(scores);
       currentCosts[LEFT] = matrix[i][j-1] + scoreGap(scores);
       matrix[i][j] = LocalAlignment::max(currentCosts, 3);
+      if(matrix[i][j] > matrix[max_i][max_j]) {
+        max_i = i;
+        max_j = j;
+      }
     }
   }
 
-
+/*
   for(i =0; i < seq1Len + 1; i++) {
     for(j = 0; j < seq2Len + 1; j++) {
       cout << matrix[i][j] << " ";
     }
     cout << "\n";
   }
-  return 0;
+  */
+
+  i = max_i;
+  j = max_j;
+  //need to refactor this backtrace as it's pretty much a copy paste of the other one
+  int pos, match, mismatch, vgap, hgap;
+  while ( (i > 0 || j > 0) && matrix[i][j] > 0)
+  {
+    pos = matrix[i][j];
+    match = matrix[i-1][j-1] + scoreMatch(scores);
+    mismatch = matrix[i-1][j-1] + scoreMismatch(scores);
+    vgap = matrix[i][j-1] + scoreGap(scores);
+    hgap = matrix[i-1][j] + scoreGap(scores);
+    //printf("Pos:%d, Match:%d, Current:%d\n", pos, match, matrix[i][j]);
+    if (i > 0 && j > 0 && (pos == match || pos == mismatch))
+    {
+      i--;
+      j--;
+    }
+
+    else if (j > 0 && pos == vgap)
+    {
+      insertGap(row1, i);
+      j--;
+    }
+
+    else if (i > 0 && pos == hgap)
+    {
+      insertGap(row2, j);
+      i--;
+    }
+
+    else
+    {
+      cout << "You distroyed the universe! You're on your own now :( \n";
+      exit(1);
+    }
+  }
+
+  cout << align << "\n";
+  return matrix[max_i][max_j];
 }
