@@ -6,15 +6,16 @@
 	<seqan/sequence.h>
 	<seqan/bam_io.h>
 
-1387364855 source:/home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/main.cpp
+1387741442 source:/home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/main.cpp
 	<fstream>
 	<iostream>
 	<seqan/seq_io.h>
 	<seqan/sequence.h>
 	<seqan/bam_io.h>
 	"needle.hpp"
+	"local_alignment.hpp"
 
-1387364913 source:/home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/needle.cpp
+1387367667 source:/home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/needle.cpp
 	<fstream>
 	<iostream>
 	"needle.hpp"
@@ -22,4 +23,9 @@
 1387364833 /home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/needle.hpp
 	<seqan/seq_io.h>
 	<seqan/sequence.h>
+
+1387741442 /home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/local_alignment.hpp
+	<iostream>
+	<seqan/sequence.h>
+	<seqan/align.h>
 
