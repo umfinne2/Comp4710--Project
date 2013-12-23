@@ -36,6 +36,10 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="../align.cpp" />
+		<Unit filename="../align.hpp" />
+		<Unit filename="../align_lib.cpp" />
+		<Unit filename="../align_lib.hpp" />
 		<Unit filename="../main.cpp" />
 		<Unit filename="../needle.cpp" />
 		<Unit filename="../needle.hpp" />
