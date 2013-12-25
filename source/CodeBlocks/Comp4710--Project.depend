@@ -6,14 +6,15 @@
 	<seqan/sequence.h>
 	<seqan/bam_io.h>
 
-1387869243 source:/home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/main.cpp
+1387947191 source:/home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/main.cpp
 	<fstream>
 	<iostream>
 	<seqan/seq_io.h>
 	<seqan/sequence.h>
 	<seqan/bam_io.h>
-	"needle.hpp"
+	"global_alignment.hpp"
 	"local_alignment.hpp"
+	"local_global_alignment.hpp"
 	"align_lib.hpp"
 
 1387367667 source:/home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/needle.cpp
@@ -36,4 +37,27 @@
 1387746323 /home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/align_lib.hpp
 	<seqan/seq_io.h>
 	<seqan/sequence.h>
+
+1387947231 source:/home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/global_alignment.cpp
+	<fstream>
+	<iostream>
+	"global_alignment.hpp"
+
+1387930997 /home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/global_alignment.hpp
+	<seqan/seq_io.h>
+	<seqan/sequence.h>
+
+1387741442 source:/home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/local_alignment.cpp
+	"local_alignment.hpp"
+
+1387947044 source:/home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/local_global_alignment.cpp
+	<fstream>
+	<iostream>
+	"local_global_alignment.hpp"
+
+1387946276 /home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/local_global_alignment.hpp
+	<seqan/seq_io.h>
+	<seqan/sequence.h>
+
+1387928485 source:/home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/uncertain_local_global_alignment.cpp
 

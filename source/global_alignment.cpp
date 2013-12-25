@@ -4,7 +4,7 @@
 //#include <seqan/seq_io.h>
 //#include <seqan/sequence.h>
 
-#include "needle.hpp"
+#include "global_alignment.hpp"
 
 using namespace std;
 using namespace seqan;
@@ -14,7 +14,7 @@ using namespace seqan;
 //typedef Row<TAlign>::Type TRow;
 
 //ugly max function cause the std one was error out on me for some reason (Rory)
-float max(float x, float y, float z)
+float GlobalAlignment::max(float x, float y, float z)
 {
     if (x >= y && x >= z)
     {
@@ -30,10 +30,10 @@ float max(float x, float y, float z)
     }
 }
 
-int needle( TAlign &align,
-            TSequence ref_seq,
-            TSequence read_seq,
-            Score<int, Simple> scheme)
+int GlobalAlignment::needle(    TAlign &align,
+                                TSequence ref_seq,
+                                TSequence read_seq,
+                                Score<int, Simple> scheme)
 {
     int score = 0;
     resize( rows(align), 2 );
@@ -147,13 +147,7 @@ int needle( TAlign &align,
         vgap = matrix[i][j-1] + scoreGap(scheme);
         hgap = matrix[i-1][j] + scoreGap(scheme);
 
-        if (i > 0 && j > 0 && (pos == match || pos == mismatch))
-        {
-            i--;
-            j--;
-        }
-
-        else if (j > 0 && pos == vgap)
+        if (j > 0 && pos == vgap)
         {
             insertGap(row1, i);
             j--;
@@ -165,6 +159,12 @@ int needle( TAlign &align,
             i--;
         }
 
+        else if (i > 0 && j > 0 && (pos == match || pos == mismatch))
+        {
+            i--;
+            j--;
+        }
+
         else
         {
             cout << "You distroyed the universe! You're on your own now :( \n";
@@ -173,7 +173,7 @@ int needle( TAlign &align,
     }
 
     //see if printing here works any better
-    cout << align << "\n";
+    //cout << align << "\n";
 
     //delete the dp matrix
     for (i = 0; i <= len1; i++)
@@ -184,53 +184,3 @@ int needle( TAlign &align,
 
     return score;
 }
-
-/*
-int main(int argc, char **argv)
-{
-    if (argc != 3)
-    {
-        cout << "Error: Invalid number of arguments\n";
-        return 1;
-    }
-
-    fstream in_ref(argv[1], ios::binary | ios::in);
-    fstream in_reads(argv[2], ios::binary | ios::in);
-    RecordReader<fstream, SinglePass<> > reader_ref(in_ref);
-    RecordReader<fstream, SinglePass<> > reader_reads(in_reads);
-
-    CharString ref_id;
-    TSequence ref_seq;
-    CharString read_id;
-    CharString read_qual;
-    TSequence read_seq;
-
-    TAlign align;
-
-    if (!atEnd(reader_ref) && readRecord(ref_id, ref_seq, reader_ref, Fasta()) != 0)
-    {
-        cout << "Error: Couldn't read reference sequence\n";
-        return 1;
-    }
-
-    cout << ref_id << "\t" << ref_seq << "\n";
-
-    while (!atEnd(reader_reads))
-    {
-        if (readRecord(read_id, read_seq, read_qual, reader_reads, Fastq()) != 0)
-        {
-            cout << "Error: Couldn't read the sequence from the file\n";
-            return 1;
-        }
-
-        Score<int, Simple> scoringScheme(0, -1, -1);
-        int score = needle(align, ref_seq, read_seq, scoringScheme);
-
-        //cout << align << "\n";
-
-    }
-
-    return 0;
-}
-
-*/

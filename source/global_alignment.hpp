@@ -1,5 +1,5 @@
-#ifndef NEEDLE_H
-#define NEEDLE_H
+#ifndef GLOBAL_ALIGNMENT_H
+#define GLOBAL_ALIGNMENT_H
 
 #include <seqan/seq_io.h>
 #include <seqan/sequence.h>
@@ -8,7 +8,12 @@ typedef seqan::String<char> TSequence;
 typedef seqan::Align<TSequence, seqan::ArrayGaps> TAlign;
 typedef seqan::Row<TAlign>::Type TRow;
 
-float max(float x, float y, float z);
-int needle( TAlign &align, TSequence ref_seq, TSequence read_seq, seqan::Score<int, seqan::Simple> scheme);
+class GlobalAlignment
+{
+    private:
+        static float max(float x, float y, float z);
 
+    public:
+        static int needle( TAlign &align, TSequence ref_seq, TSequence read_seq, seqan::Score<int, seqan::Simple> scheme);
+};
 #endif
