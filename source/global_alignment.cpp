@@ -147,16 +147,16 @@ int GlobalAlignment::needle(    TAlign &align,
         vgap = matrix[i][j-1] + scoreGap(scheme);
         hgap = matrix[i-1][j] + scoreGap(scheme);
 
-        if (j > 0 && pos == vgap)
-        {
-            insertGap(row1, i);
-            j--;
-        }
-
-        else if (i > 0 && pos == hgap)
+        if (i > 0 && pos == hgap)
         {
             insertGap(row2, j);
             i--;
+        }
+
+        else if (j > 0 && pos == vgap)
+        {
+            insertGap(row1, i);
+            j--;
         }
 
         else if (i > 0 && j > 0 && (pos == match || pos == mismatch))

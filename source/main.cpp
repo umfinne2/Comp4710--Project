@@ -79,7 +79,7 @@ int main(int argc, char **argv)
         //END
 */
 
-        float pm = percent_match(corr_align, test_align);
+        float pm = AlignLib::percent_match(corr_align, test_align);
 
         cout << "******************** Read ID: " << bam_record.qName << " ***************\n";
         cout << "Correct Alignment:\n" << corr_align << endl;

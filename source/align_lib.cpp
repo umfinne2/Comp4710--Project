@@ -1,11 +1,103 @@
+#include <seqan/align.h>
+#include <map>
 #include "align_lib.hpp"
+#include "EDNAFULL.hpp"
 
 using namespace seqan;
 using namespace std;
 
 typedef Iterator<TRow>::Type TRowIterator;
 
-float percent_match(TAlign &correct, TAlign &test)
+int AlignLib::get_index(char x)
+{
+    int result = -1;
+
+    switch (x)
+    {
+        case 'A':
+            result = 0;
+            break;
+        case 'T':
+            result = 1;
+            break;
+        case 'G':
+            result = 2;
+            break;
+        case 'C':
+            result = 3;
+            break;
+        case 'S':
+            result = 4;
+            break;
+        case 'W':
+            result = 5;
+            break;
+        case 'R':
+            result = 6;
+            break;
+        case 'Y':
+            result = 7;
+            break;
+        case 'K':
+            result = 8;
+            break;
+        case 'M':
+            result = 9;
+            break;
+        case 'B':
+            result = 10;
+            break;
+        case 'V':
+            result = 11;
+            break;
+        case 'H':
+            result = 12;
+            break;
+        case 'D':
+            result = 13;
+            break;
+        case 'N':
+            result = 14;
+            break;
+        default:
+            result = -1;
+    }
+        /*
+        dnamap['T'] = 1;
+        dnamap['G'] = 2;
+        dnamap['C'] = 3;
+        dnamap['S'] = 4;
+        dnamap['W'] = 5;
+        dnamap['R'] = 6;
+        dnamap['Y'] = 7;
+        dnamap['K'] = 8;
+        dnamap['M'] = 9;
+        dnamap['B'] = 10;
+        dnamap['V'] = 11;
+        dnamap['H'] = 12;
+        dnamap['D'] = 13;
+        dnamap['N'] = 14;
+        */
+    return result;
+}
+
+int AlignLib::get_score(char a, char b)
+{
+    if (a == gapValue<char>() || b == gapValue<char>())
+    {
+        return gapcost;
+    }
+
+    else
+    {
+        int i = get_index(toupper(a));
+        int j = get_index(toupper(b));
+
+        return EDNAFULL_matrix[i][j];
+    }
+}
+
+float AlignLib::percent_match(TAlign &correct, TAlign &test)
 {
     float result = 0.0;
     TRow &correct_ref = row(correct, 0);

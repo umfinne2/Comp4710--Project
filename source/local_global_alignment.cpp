@@ -2,6 +2,7 @@
 #include <iostream>
 
 #include "local_global_alignment.hpp"
+#include "align_lib.hpp"
 
 using namespace std;
 using namespace seqan;
@@ -76,10 +77,12 @@ int LocalGlobalAlignment::lga(   TAlign &align,
     {
         for (j = 1; j <= len2; j++)
         {
-            diagonal = matrix[i-1][j-1];
-            vertical = matrix[i][j-1] + scoreGap(scheme);
-            horizontal = matrix[i-1][j] + scoreGap(scheme);
-
+            diagonal = matrix[i-1][j-1] + AlignLib::get_score(ref_seq[i-1], read_seq[j-1]);
+            vertical = matrix[i][j-1] + AlignLib::gapcost;
+            horizontal = matrix[i-1][j] + AlignLib::gapcost;
+            //vertical = matrix[i][j-1] + scoreGap(scheme);
+            //horizontal = matrix[i-1][j] + scoreGap(scheme);
+            /*
             if (toupper(ref_seq[i-1]) == toupper(read_seq[j-1]))
             {
                 diagonal += scoreMatch(scheme);
@@ -89,7 +92,7 @@ int LocalGlobalAlignment::lga(   TAlign &align,
             {
                 diagonal += scoreMismatch(scheme);
             }
-
+            */
             matrix[i][j] = max(diagonal, vertical, horizontal);
         }
 
@@ -143,7 +146,7 @@ int LocalGlobalAlignment::lga(   TAlign &align,
     }
     */
     //traceback
-    float pos, match, mismatch, vgap, hgap;
+    float pos, dmap, vgap, hgap;
     TRow &row1 = row(align,0);
     TRow &row2 = row(align,1);
     insertGaps(row2, j, (i - max_i));   //insert tailing gaps
@@ -153,20 +156,14 @@ int LocalGlobalAlignment::lga(   TAlign &align,
         //if we write a function for computing values than this traceback routine should never change
         //between implementations
         pos = matrix[i][j];
-        match = matrix[i-1][j-1] + scoreMatch(scheme);
-        mismatch = matrix[i-1][j-1] + scoreMismatch(scheme);
-        vgap = matrix[i][j-1] + scoreGap(scheme);
-        hgap = matrix[i-1][j] + scoreGap(scheme);
+        dmap = matrix[i-1][j-1] + AlignLib::get_score(ref_seq[i-1], read_seq[j-1]);
+        //mismatch = matrix[i-1][j-1] + scoreMismatch(scheme);
+        vgap = matrix[i][j-1] + AlignLib::gapcost;
+        hgap = matrix[i-1][j] + AlignLib::gapcost;
 
-        if (i > 0 && j > 0 && (pos == match || pos == mismatch))
+        if (i > 0 && j > 0 && pos == dmap)
         {
             i--;
-            j--;
-        }
-
-        else if (j > 0 && pos == vgap)
-        {
-            insertGap(row1, i);
             j--;
         }
 
@@ -174,6 +171,12 @@ int LocalGlobalAlignment::lga(   TAlign &align,
         {
             insertGap(row2, j);
             i--;
+        }
+
+        else if (j > 0 && pos == vgap)
+        {
+            insertGap(row1, i);
+            j--;
         }
 
         else
@@ -184,7 +187,7 @@ int LocalGlobalAlignment::lga(   TAlign &align,
     }
 
     //maybe check that j == 0 and i >= 0
-    insertGaps(row2, 0, (i+1));
+    insertGaps(row2, 0, (i));
 
     //see if printing here works any better
     //cout << align << "\n";
