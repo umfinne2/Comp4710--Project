@@ -67,3 +67,64 @@
 
 1387957030 /home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/EDNAFULL.hpp
 
+1387997278 source:/home/rory/repos/Comp4710--Project/source/align_lib.cpp
+	<seqan/align.h>
+	<map>
+	"align_lib.hpp"
+	"EDNAFULL.hpp"
+
+1387997278 /home/rory/repos/Comp4710--Project/source/align_lib.hpp
+	<seqan/seq_io.h>
+	<seqan/sequence.h>
+
+1388017891 /home/rory/repos/Comp4710--Project/source/EDNAFULL.hpp
+
+1387997278 source:/home/rory/repos/Comp4710--Project/source/global_alignment.cpp
+	<fstream>
+	<iostream>
+	"global_alignment.hpp"
+
+1387997278 /home/rory/repos/Comp4710--Project/source/global_alignment.hpp
+	<seqan/seq_io.h>
+	<seqan/sequence.h>
+
+1387837692 source:/home/rory/repos/Comp4710--Project/source/local_alignment.cpp
+	"local_alignment.hpp"
+
+1387837692 /home/rory/repos/Comp4710--Project/source/local_alignment.hpp
+	<iostream>
+	<seqan/sequence.h>
+	<seqan/align.h>
+
+1387997278 source:/home/rory/repos/Comp4710--Project/source/local_global_alignment.cpp
+	<fstream>
+	<iostream>
+	"local_global_alignment.hpp"
+	"align_lib.hpp"
+
+1387997278 /home/rory/repos/Comp4710--Project/source/local_global_alignment.hpp
+	<seqan/seq_io.h>
+	<seqan/sequence.h>
+
+1388017227 source:/home/rory/repos/Comp4710--Project/source/main.cpp
+	<fstream>
+	<iostream>
+	<seqan/seq_io.h>
+	<seqan/sequence.h>
+	<seqan/bam_io.h>
+	"global_alignment.hpp"
+	"local_alignment.hpp"
+	"local_global_alignment.hpp"
+	"uncertain_local_global_alignment.hpp"
+	"align_lib.hpp"
+
+1388017326 source:/home/rory/repos/Comp4710--Project/source/uncertain_local_global_alignment.cpp
+	<fstream>
+	<iostream>
+	"uncertain_local_global_alignment.hpp"
+	"align_lib.hpp"
+
+1388015118 /home/rory/repos/Comp4710--Project/source/uncertain_local_global_alignment.hpp
+	<seqan/seq_io.h>
+	<seqan/sequence.h>
+
