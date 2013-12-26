@@ -24,27 +24,16 @@ float LocalGlobalAlignment::max(float x, float y, float z)
     }
 }
 
-int LocalGlobalAlignment::lga(   TAlign &align,
-                TSequence ref_seq,
-                TSequence read_seq,
-                Score<int, Simple> scheme)
+int LocalGlobalAlignment::lga(  TAlign &align,
+                                TSequence ref_seq,
+                                TSequence read_seq)
 {
     int score = 0;
     resize( rows(align), 2 );
-
     assignSource( row( align, 0 ), ref_seq);
     assignSource( row( align, 1 ), read_seq);
-
-    //use the built in one just to make sure it works
-    //we don't actually want to use this cause they may have
-    //optimization we don't care about.
-    //score = globalAlignment(align, scheme, NeedlemanWunsch());
-
-    //get the lengths of the sequences
     int len1 = length(ref_seq);
     int len2 = length(read_seq);
-
-    cout << "Got sequence lengths\n";
 
     //create the DP Matrix/Table + could probably be its own function
     float **matrix = new float * [len1 + 1];
@@ -53,23 +42,17 @@ int LocalGlobalAlignment::lga(   TAlign &align,
         matrix[i] = new float[len2 + 1];
     }
 
-    cout << "Created matrix\n";
-
     //initialize top row of matrix to 0s like local alignment
     for (int i = 0; i <= len1; i++)
     {
         matrix[i][0] = 0.0;
     }
 
-    //initialize
     for (int j = 0; j <= len2; j++)
     {
-        matrix[0][j] = j * scoreGap(scheme);
+        matrix[0][j] = j * AlignLib::gapcost;
     }
 
-    cout << "Initialized the matrix\n";
-    cout << "Gap=" << scoreGap(scheme) << " Match=" << scoreMatch(scheme) << " Mismatch=" << scoreMismatch(scheme) << "\n";
-    //our values for storing each potential movement
     int max_i, max_j = 0;
     float diagonal, vertical, horizontal;
     int i, j;
@@ -80,19 +63,7 @@ int LocalGlobalAlignment::lga(   TAlign &align,
             diagonal = matrix[i-1][j-1] + AlignLib::get_score(ref_seq[i-1], read_seq[j-1]);
             vertical = matrix[i][j-1] + AlignLib::gapcost;
             horizontal = matrix[i-1][j] + AlignLib::gapcost;
-            //vertical = matrix[i][j-1] + scoreGap(scheme);
-            //horizontal = matrix[i-1][j] + scoreGap(scheme);
-            /*
-            if (toupper(ref_seq[i-1]) == toupper(read_seq[j-1]))
-            {
-                diagonal += scoreMatch(scheme);
-            }
 
-            else
-            {
-                diagonal += scoreMismatch(scheme);
-            }
-            */
             matrix[i][j] = max(diagonal, vertical, horizontal);
         }
 
@@ -113,38 +84,12 @@ int LocalGlobalAlignment::lga(   TAlign &align,
         }
     }
 
-    //cout << align << "\n";
-
     //set i and j to corner index of matrix
     i--;
     j--;
 
     score = matrix[max_i][max_j];
-    cout << "Score=" << score << "\n";
 
-    //print out the top corner of the matrix and sequences
-    /*
-    cout << setw(5) << " ";
-    for (int l = 1; l < 10; l++)
-    {
-        cout << setw(5) << ref_seq[l-1];
-    }
-    cout << endl;
-
-    for (int k = 0; k < 10; k++)
-    {
-        if (k > 0)
-        {
-            cout << read_seq[k-1];
-        }
-
-        for (int l = 0; l < 10; l++)
-        {
-            cout << setw(5) << matrix[l][k];
-        }
-        cout << endl;
-    }
-    */
     //traceback
     float pos, dmap, vgap, hgap;
     TRow &row1 = row(align,0);
@@ -188,9 +133,6 @@ int LocalGlobalAlignment::lga(   TAlign &align,
 
     //maybe check that j == 0 and i >= 0
     insertGaps(row2, 0, (i));
-
-    //see if printing here works any better
-    //cout << align << "\n";
 
     //delete the dp matrix
     for (i = 0; i <= len1; i++)

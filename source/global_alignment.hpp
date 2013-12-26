@@ -14,6 +14,6 @@ class GlobalAlignment
         static float max(float x, float y, float z);
 
     public:
-        static int needle( TAlign &align, TSequence ref_seq, TSequence read_seq, seqan::Score<int, seqan::Simple> scheme);
+        static int needle( TAlign &align, TSequence ref_seq, TSequence read_seq);
 };
 #endif

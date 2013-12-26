@@ -163,3 +163,53 @@ float AlignLib::percent_match(TAlign &correct, TAlign &test)
     return result;
     //return (float)(matches / (float)(length(source(correct_read))));
 }
+
+void AlignLib::print_matrix(float **matrix, TSequence seq1, TSequence seq2, int rows, int cols, int offset, int len)
+{
+    int i_start, i_end, j_start, j_end;
+
+    //if offset is neg. subtract that from the end pos.
+    if (offset < 0)
+    {
+        i_start = cols + offset;
+        j_start = rows + offset;
+    }
+
+    else
+    {
+        i_start = offset + 1;
+        j_start = offset + 1;
+    }
+
+    if (i_start + len >= cols)
+    {
+        i_end = cols - 1;
+    }
+
+    if (j_start + len >= rows)
+    {
+        j_end = rows - 1;
+    }
+
+    cout << setw(5) << " ";
+    for (int i = i_start; i < i_end; i++)
+    {
+        cout << setw(5) << seq1[i-1];
+    }
+
+    cout << endl;
+
+    for (int j = j_start; j < j_end; j++)
+    {
+        if (j > 0)
+        {
+            cout << seq2[j-1];
+        }
+
+        for (int i = i_start; i < i_end; i++)
+        {
+            cout << setw(5) << matrix[i][j];
+        }
+        cout << endl;
+    }
+}

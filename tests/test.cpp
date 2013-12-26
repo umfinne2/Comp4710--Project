@@ -1,6 +1,8 @@
 #include <UnitTest++.h>
 #include "../source/local_alignment.hpp"
+
 using namespace std;
+
 TEST(SmithWaterman)
 {
   TSequence seq1 = "AGCGTAG";

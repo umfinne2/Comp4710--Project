@@ -5,6 +5,7 @@
 //#include <seqan/sequence.h>
 
 #include "global_alignment.hpp"
+#include "align_lib.hpp"
 
 using namespace std;
 using namespace seqan;
@@ -32,25 +33,14 @@ float GlobalAlignment::max(float x, float y, float z)
 
 int GlobalAlignment::needle(    TAlign &align,
                                 TSequence ref_seq,
-                                TSequence read_seq,
-                                Score<int, Simple> scheme)
+                                TSequence read_seq)
 {
     int score = 0;
     resize( rows(align), 2 );
-
     assignSource( row( align, 0 ), ref_seq);
     assignSource( row( align, 1 ), read_seq);
-
-    //use the built in one just to make sure it works
-    //we don't actually want to use this cause they may have
-    //optimization we don't care about.
-    //score = globalAlignment(align, scheme, NeedlemanWunsch());
-
-    //get the lengths of the sequences
     int len1 = length(ref_seq);
     int len2 = length(read_seq);
-
-    cout << "Got sequence lengths\n";
 
     //create the DP Matrix/Table + could probably be its own function
     float **matrix = new float * [len1 + 1];
@@ -59,22 +49,17 @@ int GlobalAlignment::needle(    TAlign &align,
         matrix[i] = new float[len2 + 1];
     }
 
-    cout << "Created matrix\n";
-
     //initialize (changes based on alg. could probably use function callback)
     for (int i = 0; i <= len1; i++)
     {
-        matrix[i][0] = i * scoreGap(scheme);
+        matrix[i][0] = i * AlignLib::gapcost;
     }
 
     for (int j = 0; j <= len2; j++)
     {
-        matrix[0][j] = j * scoreGap(scheme);
+        matrix[0][j] = j * AlignLib::gapcost;
     }
 
-    cout << "Initialized the matrix\n";
-    cout << "Gap=" << scoreGap(scheme) << " Match=" << scoreMatch(scheme) << " Mismatch=" << scoreMismatch(scheme) << "\n";
-    //our values for storing each potential movement
     float diagonal, vertical, horizontal;
     int i, j;
     for (i = 1; i <= len1; i++)
@@ -83,85 +68,53 @@ int GlobalAlignment::needle(    TAlign &align,
         {
             //we may want to change this if we use a lookup table rather than simple values
             //separate function???
-            diagonal = matrix[i-1][j-1];
-            vertical = matrix[i][j-1] + scoreGap(scheme);
-            horizontal = matrix[i-1][j] + scoreGap(scheme);
-
-            if (toupper(ref_seq[i-1]) == toupper(read_seq[j-1]))
-            {
-                diagonal += scoreMatch(scheme);
-            }
-
-            else
-            {
-                diagonal += scoreMismatch(scheme);
-            }
+            diagonal = matrix[i-1][j-1] + AlignLib::get_score(ref_seq[i-1], read_seq[j-1]);
+            vertical = matrix[i][j-1] + AlignLib::gapcost;
+            horizontal = matrix[i-1][j] + AlignLib::gapcost;
 
             matrix[i][j] = max(diagonal, vertical, horizontal);
         }
     }
-
-    //cout << align << "\n";
 
     //set i and j to corner index of matrix
     i--;
     j--;
 
     score = matrix[i][j];
-    cout << "Score=" << score << "\n";
 
     //print out the top corner of the matrix and sequences
-    /*
-    cout << setw(5) << " ";
-    for (int l = 1; l < 30; l++)
-    {
-        cout << setw(5) << ref_seq[l-1];
-    }
-    cout << endl;
+    //AlignLib::print_matrix(matrix, ref_seq, read_seq, len2+1, len1+1, -10, 10);
 
-    for (int k = 0; k < 30; k++)
-    {
-        if (k > 0)
-        {
-            cout << read_seq[k-1];
-        }
-
-        for (int l = 0; l < 30; l++)
-        {
-            cout << setw(5) << matrix[l][k];
-        }
-        cout << endl;
-    }
-    */
     //traceback
-    float pos, match, mismatch, vgap, hgap;
+    float pos, dmap, vgap, hgap;
     TRow &row1 = row(align,0);
     TRow &row2 = row(align,1);
-    while ( i > 0 || j > 0 )
+    while ( i > 0 && j > 0 )
     {
         //if we write a function for computing values than this traceback routine should never change
         //between implementations
         pos = matrix[i][j];
-        match = matrix[i-1][j-1] + scoreMatch(scheme);
-        mismatch = matrix[i-1][j-1] + scoreMismatch(scheme);
-        vgap = matrix[i][j-1] + scoreGap(scheme);
-        hgap = matrix[i-1][j] + scoreGap(scheme);
+        dmap = matrix[i-1][j-1] + AlignLib::get_score(ref_seq[i-1], read_seq[j-1]);
+        //match = matrix[i-1][j-1] + scoreMatch(scheme);
+        //mismatch = matrix[i-1][j-1] + scoreMismatch(scheme);
+        vgap = matrix[i][j-1] + AlignLib::gapcost;
+        hgap = matrix[i-1][j] + AlignLib::gapcost;
 
-        if (i > 0 && pos == hgap)
+        if (pos == dmap)
+        {
+            i--;
+            j--;
+        }
+
+        else if (pos == hgap)
         {
             insertGap(row2, j);
             i--;
         }
 
-        else if (j > 0 && pos == vgap)
+        else if (pos == vgap)
         {
             insertGap(row1, i);
-            j--;
-        }
-
-        else if (i > 0 && j > 0 && (pos == match || pos == mismatch))
-        {
-            i--;
             j--;
         }
 
@@ -172,8 +125,17 @@ int GlobalAlignment::needle(    TAlign &align,
         }
     }
 
-    //see if printing here works any better
-    //cout << align << "\n";
+    while (i > 0)
+    {
+        insertGap(row2, j);
+        i--;
+    }
+
+    while (j > 0)
+    {
+        insertGap(row1, i);
+        j--;
+    }
 
     //delete the dp matrix
     for (i = 0; i <= len1; i++)

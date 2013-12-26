@@ -13,7 +13,7 @@
 				<Option object_output="obj/Debug/" />
 				<Option type="1" />
 				<Option compiler="gcc" />
-				<Option parameters="../data/test/hiv-part.fa ../data/test/SOLiD/hiv-part-sim.fq" />
+				<Option parameters="../data/test/hiv-part.fa ../data/test/SOLiD/hiv-part-sim.fq ../data/test/SOLiD/hiv-part-sim.sam" />
 				<Compiler>
 					<Add option="-g" />
 					<Add option="-I ../../lib" />
@@ -36,9 +36,18 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
+		<Unit filename="../EDNAFULL.hpp" />
+		<Unit filename="../align_lib.cpp" />
+		<Unit filename="../align_lib.hpp" />
+		<Unit filename="../global_alignment.cpp" />
+		<Unit filename="../global_alignment.hpp" />
+		<Unit filename="../local_alignment.cpp" />
+		<Unit filename="../local_alignment.hpp" />
+		<Unit filename="../local_global_alignment.cpp" />
+		<Unit filename="../local_global_alignment.hpp" />
 		<Unit filename="../main.cpp" />
-		<Unit filename="../needle.cpp" />
-		<Unit filename="../needle.hpp" />
+		<Unit filename="../uncertain_local_global_alignment.cpp" />
+		<Unit filename="../uncertain_local_global_alignment.hpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />

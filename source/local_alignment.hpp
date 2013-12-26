@@ -18,11 +18,10 @@ typedef Row<TAlign>::Type TRow;
 class LocalAlignment {
 
   private:
-    static int match_cost(TSequence seq1, TSequence seq2, int i, int j, Score<int, Simple> scores);
-    static int max(int * array, int size);
+    static float max(float * array, int size);
 
   public:
-    static int smith_waterman(TSequence seq1, TSequence seq2, Score<int, Simple> scores);
+    static int smith_waterman(TAlign &align, TSequence seq1, TSequence seq2);
 };
 
 #endif
