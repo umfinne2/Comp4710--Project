@@ -62,7 +62,7 @@ int main(int argc, char **argv)
         }
 
         bamRecordToAlignment(corr_align, ref_seq, bam_record);
-        //int score = GlobalAlignment::needle(test_align, ref_seq, read_seq);
+        int score = GlobalAlignment::needle(test_align, ref_seq, read_seq);
         //int score = LocalAlignment::smith_waterman(test_align, ref_seq, read_seq);
         //int score = LocalGlobalAlignment::lga(test_align, ref_seq, read_seq);
         //int score = UncertainLocalGlobalAlignment::ulga(test_align, ref_seq, read_seq, read_qual);

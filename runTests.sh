@@ -9,6 +9,12 @@ if [ ! -f $TEST_LIB ]; then
   make all
   cd ../..
 fi
-g++ -I $SECAN_SOURCE -I $TEST_HEADERS tests/test.cpp source/local_alignment.cpp $TEST_LIB -o bin/test
+g++ -I $SECAN_SOURCE -I $TEST_HEADERS tests/test.cpp \
+source/local_alignment.cpp \
+source/global_alignment.cpp \
+source/local_global_alignment.cpp \
+source/uncertain_local_global_alignment.cpp \
+source/align_lib.cpp \
+$TEST_LIB -o bin/test
 echo "---------------\nRunning Tests..."
 bin/test

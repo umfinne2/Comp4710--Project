@@ -53,7 +53,7 @@ int LocalAlignment::smith_waterman(TAlign &align, TSequence seq1, TSequence seq2
       currentCosts[TOP] = matrix[i-1][j] + AlignLib::gapcost;
       currentCosts[LEFT] = matrix[i][j-1] + AlignLib::gapcost;
       matrix[i][j] = LocalAlignment::max(currentCosts, 3);
-      if(matrix[i][j] > matrix[max_i][max_j]) {
+      if(matrix[i][j] >= matrix[max_i][max_j]) {
         max_i = i;
         max_j = j;
       }
