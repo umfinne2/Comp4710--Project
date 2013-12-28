@@ -6,9 +6,10 @@
 	<seqan/sequence.h>
 	<seqan/bam_io.h>
 
-1388090716 source:/home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/main.cpp
+1388248239 source:/home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/main.cpp
 	<fstream>
 	<iostream>
+	<time.h>
 	<seqan/seq_io.h>
 	<seqan/sequence.h>
 	<seqan/bam_io.h>
@@ -32,13 +33,13 @@
 	<seqan/sequence.h>
 	<seqan/align.h>
 
-1388089886 source:/home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/align_lib.cpp
+1388246481 source:/home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/align_lib.cpp
 	<seqan/align.h>
 	<map>
 	"align_lib.hpp"
 	"EDNAFULL.hpp"
 
-1388087967 /home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/align_lib.hpp
+1388245829 /home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/align_lib.hpp
 	<seqan/seq_io.h>
 	<seqan/sequence.h>
 
@@ -52,7 +53,7 @@
 	<seqan/seq_io.h>
 	<seqan/sequence.h>
 
-1388091294 source:/home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/local_alignment.cpp
+1388244921 source:/home/rory/Documents/School_Work/Comp4710/Comp4710--Project/source/local_alignment.cpp
 	"local_alignment.hpp"
 	"align_lib.hpp"
 

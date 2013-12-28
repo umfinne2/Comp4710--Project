@@ -21,6 +21,7 @@ class AlignLib
         static const int gapcost = -2;
         static int get_score(char a, char b);
         static float percent_match(TAlign &correct, TAlign &test);
+        static float percent_error(TAlign &align);
         static void print_matrix(float **matrix, TSequence seq1, TSequence seq2, int rows, int cols, int offset, int len);
 };
 

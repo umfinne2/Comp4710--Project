@@ -164,6 +164,28 @@ float AlignLib::percent_match(TAlign &correct, TAlign &test)
     //return (float)(matches / (float)(length(source(correct_read))));
 }
 
+float AlignLib::percent_error(TAlign &align)
+{
+    float match = 0.0;
+    TRow &seq1 = row(align, 0);
+    TRow &seq2 = row(align, 1);
+
+    for (int i = 0; i < length(source(seq2)); ++i)
+    {
+        unsigned seq2_view_pos = toViewPosition(seq2, i);
+
+        if ( (length(seq1) > seq2_view_pos) &&
+              (toupper(seq1[seq2_view_pos]) == toupper(seq2[seq2_view_pos])))
+        {
+            match += 1.0;
+        }
+    }
+
+    float pm = match / (float)length(source(seq2));
+
+    return (1.0 - pm);
+}
+
 void AlignLib::print_matrix(float **matrix, TSequence seq1, TSequence seq2, int rows, int cols, int offset, int len)
 {
     int i_start, i_end, j_start, j_end;

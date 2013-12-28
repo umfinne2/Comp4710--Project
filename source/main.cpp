@@ -1,5 +1,6 @@
 #include <fstream>
 #include <iostream>
+#include <time.h>
 
 #include <seqan/seq_io.h>
 #include <seqan/sequence.h>
@@ -33,6 +34,9 @@ int main(int argc, char **argv)
         usage();
     }
 
+    clock_t clk1, clk2;
+    float avg_pm, avg_map, avg_err, avg_len, avg_time, read_count = 0;
+
     fstream in_ref(argv[2], ios::binary | ios::in);
     fstream in_reads(argv[3], ios::binary | ios::in);
     RecordReader<fstream, SinglePass<> > reader_ref(in_ref);
@@ -55,7 +59,7 @@ int main(int argc, char **argv)
     }
 
     //cout << ref_id << "\t" << ref_seq << endl;
-    cout << "Read_ID\tPercent_Match\tMapped\n";
+    cout << "Read_ID\tPercent_Match\tMapped\tError\tLength\tTime\n";
 
     while (!atEnd(reader_reads) && !atEnd(bamStreamIn))
     {
@@ -73,6 +77,7 @@ int main(int argc, char **argv)
 
         bamRecordToAlignment(corr_align, ref_seq, bam_record);
 
+        clk1 = clock();
         if (strcmp(argv[1], "ga") == 0)
         {
             GlobalAlignment::needle(test_align, ref_seq, read_seq);
@@ -98,15 +103,32 @@ int main(int argc, char **argv)
             cout << "Error: Invalid algorithm type must be ga | la | lga | ulga" << endl;
             usage();
         }
+        clk2 = clock();
 
         float pm = AlignLib::percent_match(corr_align, test_align);
+        float err = AlignLib::percent_error(corr_align);
+        float time = (float)(clk2-clk1)/CLOCKS_PER_SEC;
+        float len = length(source(row(corr_align, 1)));
 
         //cout << "******************** Read ID: " << bam_record.qName << " ***************\n";
         //cout << "Correct Alignment:\n" << corr_align << endl;
         //cout << "Test Alignment: " << score << "\n" << test_align << endl;
-        cout << bam_record.qName << "\t" << pm << "\t" << ceil(pm) << endl;
+        cout << bam_record.qName << "\t" << pm << "\t" << ceil(pm) << "\t" << err << "\t" << len << "\t" << time << endl;
+        avg_pm += pm;
+        avg_map += ceil(pm);
+        avg_err += err;
+        avg_time += time;
+        avg_len += len;
+        read_count++;
         //cout << endl;
     }
+
+    avg_pm = avg_pm / avg_map;      //could divide by read_count
+    avg_map = avg_map / read_count;
+    avg_err = avg_err / read_count;
+    avg_time = avg_time / read_count;
+    avg_len = avg_len / read_count;
+    cout << "Total:\t" << avg_pm << "\t" << avg_map << "\t" << avg_err << "\t" << avg_len << "\t" << avg_time << endl;
 
     return 0;
 }
