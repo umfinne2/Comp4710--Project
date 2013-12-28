@@ -42,3 +42,7 @@ algorithm you want to run the test with
 ```
 ./runTests.sh
 ```
+
+### Results ###
+The results for each of the algorithm are located in
+data/experimental/raw_results

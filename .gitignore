@@ -1,6 +1,7 @@
 a.out
 bin/test
-lib/UnitTest++/libUnitTest++.a
 *.o
+*.d
+lib/UnitTest++/libUnitTest++.a
 */CodeBlocks/bin/
 */CodeBlocks/obj/
