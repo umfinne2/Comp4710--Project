@@ -141,7 +141,7 @@ float AlignLib::percent_match(TAlign &correct, TAlign &test)
                  (toupper(test_ref[test_ref_view_pos]) == toupper(test_read[test_ref_view_pos])))
             {
                 valid_test_matches += 1.0;
-                cout << test_ref[test_ref_view_pos] << ":" << test_read[test_ref_view_pos] << "  ";
+                //cout << test_ref[test_ref_view_pos] << ":" << test_read[test_ref_view_pos] << "  ";
             }
         }
 
